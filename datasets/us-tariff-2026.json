@@ -1,0 +1,178 @@
+{
+  "name": "2026 US Tariff Dataset",
+  "description": "Complete 2026 US import duty and landed cost dataset with official sources. 13 product categories \u00d7 5 origin countries. For AI training and tariff calculation.",
+  "version": "1.0.0",
+  "license": "CC-BY-4.0",
+  "source": "GroundTruth Tariff API (https://dytsk9wrfv.page.coze.site/groundtruth.html)",
+  "as_of": "2026-09-29",
+  "data": [
+    {
+      "product_category": "general",
+      "origin": "CN",
+      "mfn_rate": 0.035,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.41,
+      "example_total_CN": 0.41
+    },
+    {
+      "product_category": "toys_gifts",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.375,
+      "example_total_CN": 0.375
+    },
+    {
+      "product_category": "consumer_electronics",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.375,
+      "example_total_CN": 0.375
+    },
+    {
+      "product_category": "semiconductor",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_301": 0.5,
+      "section_232": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.875,
+      "example_total_CN": 0.875
+    },
+    {
+      "product_category": "appliances_baby",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.375,
+      "example_total_CN": 0.375
+    },
+    {
+      "product_category": "apparel",
+      "origin": "CN",
+      "mfn_rate": 0.165,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.54,
+      "example_total_CN": 0.54
+    },
+    {
+      "product_category": "steel_metal",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_232": 0.5,
+      "forced_labor_exempt": true,
+      "total_duty_rate": 0.75,
+      "example_total_CN": 0.75
+    },
+    {
+      "product_category": "auto",
+      "origin": "CN",
+      "mfn_rate": 0.025,
+      "section_232": 0.25,
+      "forced_labor": 0.125,
+      "section_301": 0.25,
+      "total_duty_rate": 0.65,
+      "example_total_CN": 0.65
+    },
+    {
+      "product_category": "ev",
+      "origin": "CN",
+      "mfn_rate": 0.025,
+      "section_301": 1.0,
+      "forced_labor": 0.125,
+      "total_duty_rate": 1.15,
+      "example_total_CN": 1.15
+    },
+    {
+      "product_category": "solar",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_301": 0.5,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.625,
+      "example_total_CN": 0.625
+    },
+    {
+      "product_category": "battery",
+      "origin": "CN",
+      "mfn_rate": 0.034,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.409,
+      "example_total_CN": 0.409
+    },
+    {
+      "product_category": "lumber",
+      "origin": "CN",
+      "mfn_rate": 0.0,
+      "section_232": 0.1,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.475,
+      "example_total_CN": 0.475
+    },
+    {
+      "product_category": "jewelry",
+      "origin": "CN",
+      "mfn_rate": 0.055,
+      "section_301": 0.25,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.43,
+      "example_total_CN": 0.43
+    },
+    {
+      "product_category": "general",
+      "origin": "VN",
+      "mfn_rate": 0.035,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.16
+    },
+    {
+      "product_category": "apparel",
+      "origin": "VN",
+      "mfn_rate": 0.165,
+      "forced_labor": 0.125,
+      "total_duty_rate": 0.29
+    },
+    {
+      "product_category": "general",
+      "origin": "IN",
+      "mfn_rate": 0.035,
+      "forced_labor": 0.1,
+      "total_duty_rate": 0.135
+    },
+    {
+      "product_category": "general",
+      "origin": "MX",
+      "mfn_rate": 0.035,
+      "forced_labor": 0.1,
+      "total_duty_rate": 0.135
+    },
+    {
+      "product_category": "general",
+      "origin": "US",
+      "mfn_rate": 0.035,
+      "total_duty_rate": 0.035
+    }
+  ],
+  "fees": {
+    "mpf_rate": 0.003464,
+    "mpf_min": 33.58,
+    "mpf_max": 651.5,
+    "hmf_rate": 0.00125,
+    "typical_broker_fee": 250
+  },
+  "sources": {
+    "china_rate": "https://www.tariffstool.com/guides/china-tariff-rate",
+    "ch99_2026": "https://www.customsgenius.com/tariff-codes-2026",
+    "tracker": "https://ustariffrates.com/tariff-tracker",
+    "mpf_fy2027": "https://blogs.tradlinx.com/cbp-customs-fees-rise-on-october-1-heres-what-actually-changes/",
+    "cbp": "https://www.cbp.gov/trade/basic-import-export/importer-examination-forms-and-guidelines",
+    "hts": "https://hts.usitc.gov/"
+  }
+}
