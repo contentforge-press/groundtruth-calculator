@@ -1,0 +1,28 @@
+{
+  "name": "groundtruth-tariff",
+  "displayName": "GroundTruth Tariff Calculator",
+  "description": "Calculate US import duty and landed cost directly in VS Code. Source-linked 2026 tariff rates for AI agents and ecommerce sellers.",
+  "version": "1.0.0",
+  "publisher": "groundtruth",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "groundtruth.calculateTariff",
+        "title": "GroundTruth: Calculate Tariff"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/contentforge-press/groundtruth-calculator"
+  },
+  "homepage": "https://dytsk9wrfv.page.coze.site/groundtruth.html"
+}
