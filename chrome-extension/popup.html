@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 360px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #070d16;
+      color: #eaf2ff;
+      margin: 0;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 12px 0;
+      background: linear-gradient(90deg, #5b8def, #7c5cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #8aa0b8;
+      margin: 8px 0 4px 0;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #1d2b3d;
+      background: #0b1119;
+      color: #fff;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #5b8def, #7c5cff);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .result {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      background: #0e1622;
+      border: 1px solid #1d2b3d;
+      border-radius: 8px;
+    }
+    .result.show {
+      display: block;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #1d2b3d;
+      font-size: 12px;
+    }
+    .row:last-child {
+      border-bottom: 0;
+    }
+    .label {
+      color: #8aa0b8;
+    }
+    .value {
+      font-weight: 600;
+    }
+    .total {
+      margin-top: 8px;
+      padding: 10px;
+      background: linear-gradient(135deg, rgba(91,141,255,0.1), rgba(124,92,255,0.1));
+      border-radius: 6px;
+      text-align: center;
+    }
+    .total-label {
+      font-size: 11px;
+      color: #8aa0b8;
+    }
+    .total-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #6ea8ff;
+    }
+    .attribution {
+      margin-top: 12px;
+      padding: 8px;
+      background: #0b1119;
+      border: 1px solid #1d2b3d;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .attribution a {
+      color: #6ea8ff;
+      text-decoration: none;
+    }
+    .error {
+      display: none;
+      padding: 8px;
+      background: rgba(255,122,122,0.1);
+      border: 1px solid #ff7a7a;
+      border-radius: 6px;
+      color: #ff7a7a;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+    .error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1> GroundTruth Tariff</h1>
+  
+  <label>Product</label>
+  <input id="product" type="text" placeholder="e.g., cotton t-shirt" />
+  
+  <label>Origin Country</label>
+  <select id="origin">
+    <option value="CN">China 🇨🇳</option>
+    <option value="VN">Vietnam 🇳</option>
+    <option value="IN">India 🇮🇳</option>
+    <option value="MX">Mexico 🇽</option>
+    <option value="US">United States </option>
+  </select>
+  
+  <label>Declared Value (USD)</label>
+  <input id="value" type="number" placeholder="1000" min="0" step="0.01" />
+  
+  <button id="calc">Calculate</button>
+  
+  <div class="error" id="error"></div>
+  
+  <div class="result" id="result">
+    <div class="row">
+      <span class="label">Category</span>
+      <span class="value" id="res-category">—</span>
+    </div>
+    <div class="row">
+      <span class="label">MFN Rate</span>
+      <span class="value" id="res-mfn">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Section 301</span>
+      <span class="value" id="res-301">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Section 232</span>
+      <span class="value" id="res-232">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Total Duty Rate</span>
+      <span class="value" id="res-rate">—</span>
+    </div>
+    <div class="row">
+      <span class="label">Customs Duty</span>
+      <span class="value" id="res-duty">—</span>
+    </div>
+    <div class="total">
+      <div class="total-label">Total Landed Cost</div>
+      <div class="total-value" id="res-total">—</div>
+    </div>
+  </div>
+  
+  <div class="attribution">
+    Powered by <a href="https://dytsk9wrfv.page.coze.site/groundtruth.html" target="_blank">GroundTruth API</a>
+    · <a href="https://contentforge-press.github.io/groundtruth-calculator/" target="_blank">Free Web Version</a>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
