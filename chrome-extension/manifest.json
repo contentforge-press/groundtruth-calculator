@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "GroundTruth Tariff Calculator",
+  "version": "1.0.0",
+  "description": "Calculate US import duty and landed cost for any product. Source-linked 2026 tariff rates for ecommerce sellers and AI agents.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "permissions": ["activeTab"],
+  "homepage_url": "https://dytsk9wrfv.page.coze.site/groundtruth.html",
+  "repository": "https://github.com/contentforge-press/groundtruth-calculator"
+}
