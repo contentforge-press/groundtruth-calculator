@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GroundTruth Tariff Calculator — Free US Import Duty Calculator</title>
+<meta name="description" content="Free 2026 US tariff and landed cost calculator for AI agents and ecommerce sellers. Returns source-linked duty rates, MPF/HMF, and total landed cost.">
+<style>
+:root{--bg:#070d16;--card:#0e1622;--line:#1d2b3d;--mut:#8aa0b8;--p:#6ea8ff;--ok:#3ddc97;--bad:#ff7a7a;--accent:#7c5cff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1200px 600px at 50% -200px,#10243c,transparent),var(--bg);color:#eaf2ff;font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:640px;margin:0 auto;padding:48px 20px}
+header{text-align:center;margin-bottom:32px}
+h1{font-size:28px;font-weight:800;background:linear-gradient(90deg,#5b8def,#7c5cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.sub{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:8px;font-weight:600}
+input,select{width:100%;padding:13px 15px;border-radius:10px;border:1px solid var(--line);background:#0b1119;color:#fff;font-size:14px;font-family:ui-monospace,Menlo,Consolas,monospace;transition:border-color .2s}
+input:focus,select:focus{outline:none;border-color:var(--p)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+button{width:100%;padding:14px;border:0;border-radius:10px;background:linear-gradient(90deg,#5b8def,#7c5cff);color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:8px}
+button:hover{opacity:.9}
+button:disabled{opacity:.5;cursor:not-allowed}
+.result{display:none}
+.result.show{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.result-title{font-size:18px;font-weight:700}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(61,220,151,.14);color:var(--ok)}
+.rate-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line)}
+.rate-row:last-child{border-bottom:0}
+.rate-label{color:var(--mut);font-size:14px}
+.rate-value{font-weight:700;font-size:15px}
+.total{margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(91,141,255,.1),rgba(124,92,255,.1));border-radius:12px;border:1px solid var(--line)}
+.total-label{color:var(--mut);font-size:13px;margin-bottom:4px}
+.total-value{font-size:24px;font-weight:800;color:var(--p)}
+.sources{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.sources-title{font-size:12px;color:var(--mut);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.sources-list{display:flex;flex-wrap:wrap;gap:6px}
+.source-tag{font-size:11px;padding:3px 8px;background:#0b1119;border:1px solid var(--line);border-radius:6px;color:var(--mut);text-decoration:none;transition:border-color .2s}
+.source-tag:hover{border-color:var(--p);color:var(--p)}
+.attribution{margin-top:24px;padding:16px;background:#0b1119;border:1px solid var(--line);border-radius:12px;text-align:center}
+.attribution-text{font-size:13px;color:var(--mut);margin-bottom:8px}
+.attribution-link{color:var(--p);font-weight:600;text-decoration:none}
+.attribution-link:hover{text-decoration:underline}
+.disclaimer{margin-top:16px;font-size:12px;color:var(--mut);text-align:center;line-height:1.5}
+.loader{display:none;text-align:center;padding:20px}
+.loader.show{display:block}
+.loader::after{content:"";display:inline-block;width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite;margin-left:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error{display:none;padding:12px;background:rgba(255,122,122,.1);border:1px solid var(--bad);border-radius:10px;color:var(--bad);font-size:14px;margin-top:12px}
+.error.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>US Tariff Calculator</h1>
+    <p class="sub">Free 2026 US import duty & landed cost calculator for AI agents and ecommerce sellers</p>
+  </header>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="product">Product Description</label>
+        <input id="product" type="text" placeholder="e.g., cotton t-shirt, smartphone, steel bolt" autocomplete="off">
+      </div>
+      <div>
+        <label for="origin">Origin Country</label>
+        <select id="origin">
+          <option value="CN">China 🇨🇳</option>
+          <option value="VN">Vietnam 🇳</option>
+          <option value="IN">India 🇮🇳</option>
+          <option value="MX">Mexico 🇽</option>
+          <option value="US">United States 🇺</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="value">Declared Value (USD)</label>
+        <input id="value" type="number" placeholder="1000" min="0" step="0.01">
+      </div>
+      <div>
+        <label for="mode">Shipping Mode</label>
+        <select id="mode">
+          <option value="ocean">Ocean Freight</option>
+          <option value="air">Air Freight</option>
+        </select>
+      </div>
+    </div>
+    <button id="calc">Calculate Tariff</button>
+    <div class="loader" id="loader">Calculating</div>
+    <div class="error" id="error"></div>
+  </div>
+
+  <div class="card result" id="result">
+    <div class="result-header">
+      <div class="result-title">Tariff Estimate</div>
+      <div class="badge">2026 Rates</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Product Category</div>
+      <div class="rate-value" id="res-category">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Origin</div>
+      <div class="rate-value" id="res-origin">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">MFN Rate</div>
+      <div class="rate-value" id="res-mfn">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Section 301 (China)</div>
+      <div class="rate-value" id="res-301">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Section 232</div>
+      <div class="rate-value" id="res-232">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Forced Labor Base</div>
+      <div class="rate-value" id="res-forced">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Total Duty Rate</div>
+      <div class="rate-value" id="res-rate">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">Customs Duty</div>
+      <div class="rate-value" id="res-duty">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">MPF</div>
+      <div class="rate-value" id="res-mpf">—</div>
+    </div>
+    <div class="rate-row">
+      <div class="rate-label">HMF</div>
+      <div class="rate-value" id="res-hmf">—</div>
+    </div>
+    <div class="total">
+      <div class="total-label">Total Landed Cost</div>
+      <div class="total-value" id="res-total">—</div>
+    </div>
+    <div class="sources">
+      <div class="sources-title">Official Sources</div>
+      <div class="sources-list" id="res-sources"></div>
+    </div>
+  </div>
+
+  <div class="attribution">
+    <div class="attribution-text">Powered by</div>
+    <a href="https://dytsk9wrfv.page.coze.site/groundtruth.html" class="attribution-link" target="_blank" rel="noopener">GroundTruth Tariff API</a>
+    <div class="attribution-text" style="margin-top:8px;font-size:12px">Free with attribution · <a href="https://dytsk9wrfv.page.coze.site/groundtruth.html#api" class="attribution-link" target="_blank" rel="noopener">Get API Key</a></div>
+  </div>
+
+  <div class="disclaimer">
+    Planning estimates, not a CBP entry. Rates change often; confirm the 10-digit HTS code with a licensed customs broker.
+  </div>
+</div>
+
+<script>
+const API_BASE="https://winter-river-47fc.contentforge-press.workers.dev";
+
+function fmt(n){return "$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function pct(n){return (Number(n||0)*100).toFixed(2)+"%";}
+
+async function calculate(){
+  const product=document.getElementById("product").value.trim();
+  const origin=document.getElementById("origin").value;
+  const value=parseFloat(document.getElementById("value").value)||0;
+  const mode=document.getElementById("mode").value;
+  const error=document.getElementById("error");
+  const loader=document.getElementById("loader");
+  const result=document.getElementById("result");
+
+  error.classList.remove("show");
+  result.classList.remove("show");
+
+  if(!product){error.textContent="Please enter a product description.";error.classList.add("show");return;}
+  if(value<=0){error.textContent="Please enter a valid declared value.";error.classList.add("show");return;}
+
+  loader.classList.add("show");
+
+  try{
+    const res=await fetch(`${API_BASE}/v1/tariff?product_description=${encodeURIComponent(product)}&origin_code=${origin}&declared_value=${value}&arrival_mode=${mode}`);
+    const data=await res.json();
+
+    if(!res.ok){error.textContent=data.message||"API error. Try again.";error.classList.add("show");return;}
+
+    document.getElementById("res-category").textContent=data.matched_category?.label||"—";
+    document.getElementById("res-origin").textContent=origin;
+    document.getElementById("res-mfn").textContent=pct(data.rate_layers?.mfn);
+    document.getElementById("res-301").textContent=pct(data.rate_layers?.section_301);
+    document.getElementById("res-232").textContent=pct(data.rate_layers?.section_232);
+    document.getElementById("res-forced").textContent=pct(data.rate_layers?.forced_labor);
+    document.getElementById("res-rate").textContent=pct(data.total_duty_rate);
+    document.getElementById("res-duty").textContent=fmt(data.total_customs_duty);
+    document.getElementById("res-mpf").textContent=fmt(data.mpf);
+    document.getElementById("res-hmf").textContent=fmt(data.hmf);
+    document.getElementById("res-total").textContent=fmt(data.total_landed_cost);
+
+    const sourcesList=document.getElementById("res-sources");
+    sourcesList.innerHTML="";
+    if(data.sources){
+      for(const [key,url] of Object.entries(data.sources)){
+        const a=document.createElement("a");
+        a.href=url;
+        a.target="_blank";
+        a.rel="noopener";
+        a.className="source-tag";
+        a.textContent=key;
+        sourcesList.appendChild(a);
+      }
+    }
+
+    result.classList.add("show");
+  }catch(e){
+    error.textContent="Network error. Try again.";
+    error.classList.add("show");
+  }finally{
+    loader.classList.remove("show");
+  }
+}
+
+document.getElementById("calc").addEventListener("click",calculate);
+document.getElementById("value").addEventListener("keydown",e=>{if(e.key==="Enter")calculate();});
+</script>
+</body>
+</html>
