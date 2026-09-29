@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>US Import Tariff Calculator</title>
+<style>
+:root{--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--brand:#0d9488;--bg:#ffffff;--soft:#f8fafc;--bad:#dc2626}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:2px}
+label{display:block;font-size:11px;color:var(--mut);margin:0 0 5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+input,select{width:100%;padding:10px 11px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:14px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+button{width:100%;padding:12px;border:0;border-radius:8px;background:var(--brand);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(1.05)}
+.err{display:none;color:var(--bad);font-size:13px;margin-top:8px}
+.err.show{display:block}
+.res{display:none;margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.res.show{display:block}
+.rr{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.rr:last-child{border-bottom:0}
+.rr .l{color:var(--mut)}
+.rr .v{font-weight:700}
+.tot{background:var(--soft);padding:11px 12px}
+.tot .l{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.tot .v{font-size:20px;font-weight:800;color:var(--brand)}
+.by{margin-top:10px;text-align:center;font-size:12px;color:var(--mut)}
+.by a{color:var(--brand);font-weight:600;text-decoration:none}
+.by a:hover{text-decoration:underline}
+.load{display:none;font-size:13px;color:var(--mut);margin-top:8px;text-align:center}
+.load.show{display:block}
+</style>
+</head>
+<body>
+<form id="f" onsubmit="return false">
+  <div class="grid">
+    <div style="grid-column:1 / span 2">
+      <label for="p">Product</label>
+      <input id="p" type="text" placeholder="e.g. cotton t-shirt" autocomplete="off">
+    </div>
+    <div>
+      <label for="o">Origin</label>
+      <select id="o">
+        <option value="CN">China</option>
+        <option value="VN">Vietnam</option>
+        <option value="IN">India</option>
+        <option value="MX">Mexico</option>
+        <option value="US">United States</option>
+      </select>
+    </div>
+    <div>
+      <label for="m">Mode</label>
+      <select id="m"><option value="ocean">Ocean</option><option value="air">Air</option></select>
+    </div>
+    <div style="grid-column:1 / span 2">
+      <label for="v">Declared value (USD)</label>
+      <input id="v" type="number" min="0" step="0.01" placeholder="1000">
+    </div>
+  </div>
+  <button id="go">Calculate import duty</button>
+  <div class="load" id="load">Calculating…</div>
+  <div class="err" id="err"></div>
+</form>
+
+<div class="res" id="res">
+  <div class="rr"><span class="l">Category</span><span class="v" id="r-cat">—</span></div>
+  <div class="rr"><span class="l">Total duty rate</span><span class="v" id="r-rate">—</span></div>
+  <div class="rr"><span class="l">Customs duty</span><span class="v" id="r-duty">—</span></div>
+  <div class="rr"><span class="l">MPF</span><span class="v" id="r-mpf">—</span></div>
+  <div class="rr"><span class="l">HMF</span><span class="v" id="r-hmf">—</span></div>
+  <div class="tot rr"><span class="l">Landed cost</span><span class="v" id="r-tot">—</span></div>
+</div>
+
+<div class="by">Duties by <a href="https://dytsk9wrfv.page.coze.site/groundtruth.html" target="_blank" rel="noopener">GroundTruth Tariff API</a></div>
+
+<script>
+var API="https://winter-river-47fc.contentforge-press.workers.dev";
+function $(id){return document.getElementById(id);}
+function money(n){return "$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function pct(n){return (Number(n||0)*100).toFixed(Number(n||0)*100%1?1:0)+"%";}
+function resize(){
+  var h=document.documentElement.scrollHeight;
+  try{parent.postMessage({type:"gt-resize",height:h},"*");}catch(e){}
+}
+new ResizeObserver(resize).observe(document.body);
+
+$("go").addEventListener("click",function(){
+  var product=$("p").value.trim(),origin=$("o").value,value=parseFloat($("v").value)||0,mode=$("m").value;
+  var err=$("err"),res=$("res"),load=$("load");
+  err.classList.remove("show");res.classList.remove("show");
+  if(!product){err.textContent="Enter a product.";err.classList.add("show");resize();return;}
+  if(value<=0){err.textContent="Enter a valid value.";err.classList.add("show");resize();return;}
+  load.classList.add("show");resize();
+  fetch(API+"/v1/tariff?product_description="+encodeURIComponent(product)+"&origin_code="+origin+"&declared_value="+value+"&arrival_mode="+mode)
+   .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+   .then(function(x){
+     load.classList.remove("show");
+     if(!x.ok){err.textContent=x.d.message||"API error.";err.classList.add("show");resize();return;}
+     $("r-cat").textContent=(x.d.matched_category&&x.d.matched_category.label)||"—";
+     $("r-rate").textContent=pct(x.d.total_duty_rate);
+     $("r-duty").textContent=money(x.d.total_customs_duty);
+     $("r-mpf").textContent=money(x.d.mpf);
+     $("r-hmf").textContent=x.d.hmf?money(x.d.hmf):"—";
+     $("r-tot").textContent=money(x.d.total_landed_cost);
+     res.classList.add("show");resize();
+   })
+   .catch(function(){load.classList.remove("show");err.textContent="Network error.";err.classList.add("show");resize();});
+});
+window.addEventListener("load",resize);
+</script>
+</body>
+</html>
